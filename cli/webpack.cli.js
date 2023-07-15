@@ -1,7 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { env, entryPath, outputPath } = require("./commander");
+const { IS_DEV, env, entryPath, outputPath } = require("./commander");
 const rules = require("./rules");
 const plugins = require("./plugins");
 const alias = require("./alias");
@@ -21,20 +21,35 @@ const config = {
     alias,
     extensions: [".ts", ".js", ".json", ".scss", ".css", ".vue"],
   },
-  devtool:
-    env === "production" ? undefined : "inline-nosources-cheap-source-map",
+  devtool: IS_DEV ? "inline-nosources-cheap-source-map" : undefined,
+  devServer: IS_DEV
+    ? {
+        open: false,
+        host: "0.0.0.0",
+        port: 9000,
+      }
+    : undefined,
 };
 
-webpack(config, (err, stats) => {
-  if (err) {
-    console.error(err.message);
-    return;
-  }
+const compiler = webpack(config);
+if (IS_DEV) {
+  const webpackDevServer = require("webpack-dev-server");
+  const server = new webpackDevServer(config.devServer, compiler);
 
-  console.log(
-    stats.toString({
-      chunks: false, // Makes the build much quieter
-      colors: true, // Shows colors in the console
-    })
-  );
-});
+  console.log("Starting server...");
+  server.start();
+} else {
+  compiler.run((err, stats) => {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+
+    console.log(
+      stats.toString({
+        chunks: false, // Makes the build much quieter
+        colors: true, // Shows colors in the console
+      })
+    );
+  });
+}

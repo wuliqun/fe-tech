@@ -30,6 +30,6 @@
     "useDefineForClassFields": true,
   },
   "extensions": [".vue"],
-  "include": ["src/**/*", "utils/*"],
+  "include": ["src/**/*", "utils/**/*","typings/*"],
   "exclude": ["node_modules/*"]
 }

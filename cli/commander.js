@@ -43,4 +43,5 @@ module.exports = {
   entryPath,
   outputPath,
   env,
+  IS_DEV: env !== "production",
 };

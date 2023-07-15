@@ -1,32 +1,19 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const { env } = require("./commander");
+const { IS_DEV } = require("./commander");
 
 module.exports = [
   {
-    test: /\.(j|t)s$/,
-    loader: "babel-loader",
-    exclude: /node_modules/,
-    options: {
-      presets: ["@babel/preset-env", "@babel/preset-typescript"],
-    },
-  },
-  {
     test: /\.s?css$/, // 匹配文件
     use: [
-      env === "production"
-        ? {
+      IS_DEV
+        ? "style-loader"
+        : {
             loader: MiniCssExtractPlugin.loader,
-          }
-        : "style-loader", // 使用<style>将css-loader内部样式注入到我们的HTML页面,
+          },
       "css-loader", // 加载.css文件将其转换为JS模块
       {
         loader: "postcss-loader",
-        options: {
-          config: {
-            path: "./", // 写到目录即可，文件名强制要求是postcss.config.js
-          },
-        },
       },
       "sass-loader", // 加载 SASS / SCSS 文件并将其编译为 CSS
     ],
@@ -50,17 +37,20 @@ module.exports = [
   },
   {
     test: /\.vue$/,
-    use: {
-      loader: "vue-loader",
-      options: {
-        transformAssetUrls: {
-          video: ["src", "poster"],
-          source: "src",
-          img: "src",
-          image: ["xlink:href", "href"],
-          use: ["xlink:href", "href"],
-        },
-      },
+    loader: "vue-loader",
+  },
+  {
+    test: /\.(j|t)s$/,
+    loader: "babel-loader",
+    options: {
+      presets: [
+        "@babel/preset-env",
+        ["@babel/preset-typescript", { allExtensions: true }],
+      ],
+      plugins: [
+        "@babel/plugin-proposal-numeric-separator",
+        "@babel/plugin-proposal-optional-chaining",
+      ],
     },
   },
 ];

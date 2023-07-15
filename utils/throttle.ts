@@ -34,3 +34,5 @@ function throttle(
 
   return _fn;
 }
+
+export { throttle };

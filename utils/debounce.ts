@@ -24,3 +24,5 @@ function debounce(
 
   return _fn;
 }
+
+export { debounce };
