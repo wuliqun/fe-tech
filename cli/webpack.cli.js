@@ -11,7 +11,8 @@ const config = {
   entry: path.join(entryPath, "index.ts"),
   output: {
     path: outputPath,
-    filename: "js/[name].[chunkhash:8].js",
+    filename: "js/[name].[contenthash:8].js",
+    clean: true,
   },
   module: {
     rules,
@@ -20,6 +21,12 @@ const config = {
   resolve: {
     alias,
     extensions: [".ts", ".js", ".json", ".scss", ".css", ".vue"],
+  },
+  optimization: {
+    // TODO:
+    splitChunks: {
+      chunks: /utils/,
+    },
   },
   devtool: IS_DEV ? "inline-nosources-cheap-source-map" : undefined,
   devServer: IS_DEV
