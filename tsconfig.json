@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": false, // 允许编译 javascript 文件
+    "checkJs": false, // 报告 javascript 文件中的错误
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "jsx": "preserve",
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true, // 报告 switch 语句的 fallthrough 错误。（即，不允许 switch 的 case 语句贯穿）
+    "noImplicitAny": false, // 在表达式和声明上有隐含的 any类型时报错
+    "noImplicitThis": false,
+    "paths": {
+      "UTILS": ["utils/index"],
+      "UTILS/*": ["utils/*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "sourceMap": true,
+    "target": "esnext",
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types", "typings"],
+    "useDefineForClassFields": true,
+  },
+  "extensions": [".vue"],
+  "include": ["src/**/*", "utils/*"],
+  "exclude": ["node_modules/*"]
+}
