@@ -51,7 +51,9 @@ function main() {
       .prompt([
         {
           type: "list",
-          message: colors.green(`选择构建项目, `) + colors.grey(`${EXIT}退出`),
+          message:
+            colors.green(`选择${ISBUILD ? "构建" : ""}项目, `) +
+            colors.grey(`${EXIT}退出`),
           default: projects[0],
           choices: [...projects, EXIT],
           name: "project",
