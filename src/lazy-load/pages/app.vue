@@ -3,6 +3,7 @@
     <div v-for="img in images" :key="img" class="img">
       <img v-lazy="img" alt="" />
     </div>
+    <img src="/public/img.png" alt="" />
   </div>
 </template>
 <script setup lang="ts">

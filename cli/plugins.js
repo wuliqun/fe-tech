@@ -1,7 +1,9 @@
+const path = require("path");
 const { DefinePlugin } = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const { entryPath, IS_DEV, env, project } = require("./commander");
 
@@ -22,6 +24,12 @@ if (IS_DEV) {
   plugins.push(
     new MiniCssExtractPlugin({
       filename: "style/[name].[contenthash:8].css",
+    })
+  );
+
+  plugins.push(
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.join(entryPath, "public"), to: "public" }],
     })
   );
 }

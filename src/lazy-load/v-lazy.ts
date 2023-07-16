@@ -2,7 +2,7 @@ import { Directive } from "vue";
 import { throttle } from "UTILS/throttle";
 
 function getBlurImage(src: string) {
-  return `${src}?imageMogr2/thumbnail/20x`;
+  return `${src}?imageMogr2/thumbnail/10x`;
 }
 
 let observer: IntersectionObserver | null = null;

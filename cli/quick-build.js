@@ -10,6 +10,7 @@ const inquirer = require("inquirer");
 const cacheFile = "node_modules/.lq/.project";
 
 const ISBUILD = process.argv.indexOf("--build") !== -1;
+const ISPREVIEW = process.argv.indexOf("--preview") !== -1;
 /**
  * 获取最近更改的项目
  *    逻辑: 存在未提交git修改
@@ -61,7 +62,11 @@ function main() {
       ])
       .then((answer) => {
         if (answer.project !== EXIT) {
-          shelljs.exec(`pnpm ${ISBUILD ? "build" : "dev"} ${answer.project}`);
+          shelljs.exec(
+            `pnpm ${ISPREVIEW ? "preview" : ISBUILD ? "build" : "dev"} ${
+              answer.project
+            }`
+          );
         }
       });
   } else {

@@ -9,11 +9,13 @@ program
   .version("1.0.0")
   .option("-p, --project <string>", "Add build project")
   .option("-e, --env <string>", "Add development mode")
+  .option("-v, --view <string>", "Is preview or not")
   .parse(process.argv);
 
 cacheProject(program);
 
 const env = program.getOptionValue("env");
+const IS_PREVIEW = program.getOptionValue("view") === "preview";
 const project = program.getOptionValue("project");
 
 // 参数检测
@@ -43,5 +45,6 @@ module.exports = {
   entryPath,
   outputPath,
   env,
+  IS_PREVIEW,
   IS_DEV: env !== "production",
 };
