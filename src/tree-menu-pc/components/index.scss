@@ -1,0 +1,40 @@
+.m-tree-menu{
+  .menu-list{
+    width: 280px;
+    &.menu-list-0{
+      text-indent: 8px;
+      background-color: #000;
+    }
+    &.menu-list-1{
+      text-indent: 16px;
+      background-color: #333;
+    }
+    &.menu-list-2{
+      text-indent: 24px;
+      background-color: #555;
+    }
+    &.menu-list-3{
+      text-indent: 32px;
+      background-color: #777;
+    }
+    &.menu-list-4{
+      text-indent: 40px;
+      background-color: #999;
+    }
+
+    .menu-item{
+      cursor: pointer;
+    }
+
+    .menu-item-txt{
+      height: 50px;
+      line-height: 50px;
+      color:#fff;
+      &:hover{
+        color:#000;
+        background-color: #6ea1ff;
+      }
+    }
+  }
+
+}
