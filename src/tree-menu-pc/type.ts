@@ -1,6 +1,13 @@
-type MenuItem = {
+type File = {
   name: string;
-  children?: MenuItem[];
+  kind: "file";
+  handler: FileSystemFileHandle;
+};
+type Directory = {
+  name: string;
+  kind: "directory";
+  handler: FileSystemDirectoryHandle;
+  children?: Array<File | Directory>;
 };
 
-export { type MenuItem };
+export type { Directory, File };

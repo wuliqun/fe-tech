@@ -1,80 +1,69 @@
 <template>
   <div class="app">
-    <tree-menu :menus="menus"></tree-menu>
+    <div class="sider">
+      <button v-if="!root" class="btn-open" @click="selectFolder()">
+        Open Folder
+      </button>
+      <!-- <tree-menu :menus="[]" /> -->
+    </div>
+    <div class="main"></div>
   </div>
 </template>
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import TreeMenu from "../components/tree-menu";
-import type { MenuItem } from "../type";
+import type { File, Directory } from "../type";
 
-const menus: MenuItem[] = reactive([
-  { name: "menu-1-1" },
-  {
-    name: "menu-1-2",
-    children: [
-      {
-        name: "menu-1-2-1",
-      },
-      {
-        name: "menu-1-2-2",
-      },
-      {
-        name: "menu-1-2-3",
-      },
-    ],
-  },
-  {
-    name: "menu-1-3",
-    children: [
-      {
-        name: "menu-1-3-1",
-        children: [
-          {
-            name: "menu-1-3-1-1",
-          },
-          {
-            name: "menu-1-3-1-2",
-          },
-          {
-            name: "menu-1-3-1-3",
-          },
-        ],
-      },
-      {
-        name: "menu-1-3-2",
-      },
-      {
-        name: "menu-1-3-3",
-        children: [
-          {
-            name: "menu-1-3-3-1",
-          },
-          {
-            name: "menu-1-3-3-2",
-          },
-          {
-            name: "menu-1-3-3-3",
-          },
-          {
-            name: "menu-1-3-3-4",
-            children: [
-              {
-                name: "menu-1-3-3-4-1",
-              },
-              {
-                name: "menu-1-3-3-4-2",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "menu-1-3-4",
-      },
-    ],
-  },
-]);
+const root = ref<Directory>();
+
+function selectFolder() {
+  window.showDirectoryPicker().then(
+    async (res) => {
+      analyseFolder(res);
+    },
+    (err) => {
+      // cancel
+    }
+  );
+}
+
+async function analyseFolder(handler: FileSystemDirectoryHandle) {
+  const iterator = handler.entries();
+  let h = await iterator.next();
+  while (!h.done) {
+    console.log(h.value);
+    h = await iterator.next();
+  }
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.app {
+  display: flex;
+  height: 100%;
+  .sider {
+    overflow-y: auto;
+    width: 300px;
+    height: 100%;
+    padding: 0 20px;
+    background-color: #252526;
+    .btn-open {
+      width: 260px;
+      height: 28px;
+      margin-top: 12px;
+      background-color: #0078d4;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.1s ease-in-out;
+      &:hover {
+        background-color: #026ec1;
+      }
+    }
+  }
+  .main {
+    flex: 1;
+  }
+}
+</style>

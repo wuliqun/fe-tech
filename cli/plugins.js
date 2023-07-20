@@ -5,6 +5,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+const AutoImport = require("unplugin-auto-import/webpack");
+const Components = require("unplugin-vue-components/webpack");
+const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
+
 const { entryPath, IS_DEV, env, project } = require("./commander");
 
 const plugins = [
@@ -16,6 +20,12 @@ const plugins = [
     // 消除vue warning
     __VUE_OPTIONS_API__: false, // 是否允许选项式API
     __VUE_PROD_DEVTOOLS__: false, // 是否允许生产环境调试
+  }),
+  AutoImport({
+    resolvers: [ElementPlusResolver()],
+  }),
+  Components({
+    resolvers: [ElementPlusResolver()],
   }),
 ];
 

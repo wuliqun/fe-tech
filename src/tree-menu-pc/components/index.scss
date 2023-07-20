@@ -1,5 +1,7 @@
 .m-tree-menu{
+  user-select: none;
   .menu-list{
+    overflow: hidden;
     width: 280px;
     &.menu-list-0{
       text-indent: 8px;
@@ -24,17 +26,37 @@
 
     .menu-item{
       cursor: pointer;
+      & > .menu-list{
+        height: 0;
+      }
+      &.active{
+        .menu-item-txt{
+          color:#000;
+          background-color: #6ea1ff;
+        }
+      }
+      &.open{
+        & > .menu-list{
+          height: auto;
+        }
+      }
+
     }
 
     .menu-item-txt{
       height: 50px;
       line-height: 50px;
       color:#fff;
-      &:hover{
-        color:#000;
-        background-color: #6ea1ff;
+
+      @media (any-hover: hover) {
+        &:hover{
+          color:#000;
+          background-color: #6ea1ff;
+        }
+      }
+      &.with-sub{
+        padding-left: 10px;
       }
     }
   }
-
 }

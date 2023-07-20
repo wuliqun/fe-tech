@@ -11,11 +11,18 @@ module.exports = [
         : {
             loader: MiniCssExtractPlugin.loader,
           },
-      "css-loader", // 加载.css文件将其转换为JS模块
+      {
+        loader: "css-loader",
+        options: {
+          import: true,
+        },
+      },
       {
         loader: "postcss-loader",
       },
-      "sass-loader", // 加载 SASS / SCSS 文件并将其编译为 CSS
+      {
+        loader: "sass-loader",
+      },
     ],
   },
   {
