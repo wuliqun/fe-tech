@@ -4,22 +4,27 @@
       <button v-if="!root" class="btn-open" @click="selectFolder()">
         Open Folder
       </button>
-      <!-- <tree-menu :menus="[]" /> -->
+      <tree-menu :root="root" />
     </div>
     <div class="main"></div>
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import TreeMenu from "../components/tree-menu";
-import type { File, Directory } from "../type";
+import type { FileOrDirectory, Directory } from "../type";
 
 const root = ref<Directory>();
-
 function selectFolder() {
   window.showDirectoryPicker().then(
-    async (res) => {
-      analyseFolder(res);
+    async (handler) => {
+      const folder: Directory = {
+        name: handler.name,
+        kind: handler.kind,
+        handler,
+      };
+      root.value = folder;
+      folder.children = await analyseFolder(handler);
     },
     (err) => {
       // cancel
@@ -28,12 +33,25 @@ function selectFolder() {
 }
 
 async function analyseFolder(handler: FileSystemDirectoryHandle) {
+  const array: Array<FileOrDirectory> = [];
   const iterator = handler.entries();
   let h = await iterator.next();
   while (!h.done) {
-    console.log(h.value);
+    const fileOrDirectory: FileOrDirectory = {
+      name: h.value[1].name,
+      kind: h.value[1].kind,
+      handler: h.value[1] as any,
+    };
+    if (fileOrDirectory.kind === "directory") {
+      fileOrDirectory.children = await analyseFolder(
+        h.value[1] as FileSystemDirectoryHandle
+      );
+    }
+    array.push(fileOrDirectory);
     h = await iterator.next();
   }
+
+  return array;
 }
 </script>
 

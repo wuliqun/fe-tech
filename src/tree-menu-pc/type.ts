@@ -1,13 +1,21 @@
-type File = {
+type FileOrDirectory = {
   name: string;
-  kind: "file";
-  handler: FileSystemFileHandle;
-};
-type Directory = {
-  name: string;
-  kind: "directory";
-  handler: FileSystemDirectoryHandle;
-  children?: Array<File | Directory>;
-};
 
-export type { Directory, File };
+  active?: boolean;
+  focus?: boolean;
+} & (
+  | {
+      kind: "file";
+      handler: FileSystemFileHandle;
+    }
+  | {
+      kind: "directory";
+      handler: FileSystemDirectoryHandle;
+      children?: Array<FileOrDirectory>;
+    }
+);
+
+type Directory = Extract<FileOrDirectory, { kind: "directory" }>;
+type File = Extract<FileOrDirectory, { kind: "file" }>;
+
+export type { FileOrDirectory, Directory, File };

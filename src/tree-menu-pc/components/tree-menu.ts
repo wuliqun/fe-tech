@@ -1,11 +1,11 @@
 import { type PropType, defineComponent, h, reactive, ref } from "vue";
-import { MenuItem } from "../type";
+import { FileOrDirectory, Directory } from "../type";
 import "./index.scss";
 
-function renderMenuItem(
-  item: MenuItem,
+function renderFileOrDirectory(
+  item: FileOrDirectory,
   path: number[],
-  onClick: (item: MenuItem, path: number[]) => void
+  onClick: (item: FileOrDirectory, path: number[]) => void
 ) {
   return h(
     "div",
@@ -33,9 +33,9 @@ function renderMenuItem(
 }
 
 function renderMenu(
-  menu: MenuItem[],
+  menu: FileOrDirectory[],
   path: number[],
-  onClick: (item: MenuItem, path: number[]) => void,
+  onClick: (item: FileOrDirectory, path: number[]) => void,
   active?: boolean
 ) {
   return h(
@@ -46,23 +46,25 @@ function renderMenu(
         { open: path.length === 0 || active },
       ],
     },
-    [menu.map((item, index) => renderMenuItem(item, [...path, index], onClick))]
+    [
+      menu.map((item, index) =>
+        renderFileOrDirectory(item, [...path, index], onClick)
+      ),
+    ]
   );
 }
 
 export default defineComponent({
   props: {
     menus: {
-      type: Array as PropType<Array<MenuItem>>,
-      required: true as const,
+      type: Object as PropType<Directory>,
     },
   },
   emits: ["open", "fold", "active"],
   setup(props, { emit }) {
-    const menus: MenuItem[] = reactive(JSON.parse(JSON.stringify(props.menus)));
     const active = ref<number[]>([]);
 
-    function onClick(item: MenuItem, path: number[]) {
+    function onClick(item: FileOrDirectory, path: number[]) {
       console.log(path);
       if (item.children?.length) {
         item.active = !item.active;
@@ -77,7 +79,7 @@ export default defineComponent({
           emit("active", item.name);
           if (active.value.length) {
             try {
-              let m: MenuItem = menus[active.value[0]];
+              let m: FileOrDirectory = menus[active.value[0]];
               for (let i = 1; i < active.value.length; i++) {
                 m = m.children![active.value[i]];
               }
