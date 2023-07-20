@@ -82,6 +82,8 @@ async function analyseFolder(handler: FileSystemDirectoryHandle) {
   }
   .main {
     flex: 1;
+    height: 100%;
+    background-color: #1e1e1e;
   }
 }
 </style>

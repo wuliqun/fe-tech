@@ -4,3 +4,10 @@
 body,#app{
   height: 100%;
 }
+
+
+.f-thide {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

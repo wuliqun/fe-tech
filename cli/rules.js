@@ -14,7 +14,8 @@ module.exports = [
       {
         loader: "css-loader",
         options: {
-          import: true,
+          url: true,
+          esModule: false,
         },
       },
       {
@@ -36,8 +37,8 @@ module.exports = [
         loader: "url-loader",
         options: {
           name: "[name].[hash:5].[ext]",
-          limit: 10 * 1024, // size <= 20kb
-          outputPath: "img",
+          limit: 10 * 1024, // size <= 10kb
+          outputPath: "asset",
         },
       },
     ],
