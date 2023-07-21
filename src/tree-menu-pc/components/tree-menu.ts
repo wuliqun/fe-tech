@@ -47,7 +47,9 @@ function renderFileOrDirectory(
       ),
     ].concat(
       folder.active && folder.kind === "directory" && folder.children?.length
-        ? folder.children.map((item) => renderFileOrDirectory(item, onClick))
+        ? folder.children.map((item) =>
+            renderFileOrDirectory(item, onClick, activeFile)
+          )
         : []
     )
   );

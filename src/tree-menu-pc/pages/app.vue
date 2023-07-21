@@ -91,7 +91,16 @@ function preview(file: File) {
   file.handler
     .getFile()
     .then((res) => {
-      return res.text();
+      if (isImage.value) {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(res);
+        });
+      } else {
+        return res.text();
+      }
     })
     .then((res) => {
       text.value = res;
