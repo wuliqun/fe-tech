@@ -1,6 +1,7 @@
 type FileOrDirectory = {
   name: string;
-
+  path: string;
+  pathArr: number[];
   active?: boolean;
   focus?: boolean;
 } & (

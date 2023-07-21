@@ -1,61 +1,33 @@
 .m-tree-menu{
   user-select: none;
-  .menu-list{
-    overflow: hidden;
-    width: 280px;
-    &.menu-list-0{
-      text-indent: 8px;
-      background-color: #000;
-    }
-    &.menu-list-1{
-      text-indent: 16px;
-      background-color: #333;
-    }
-    &.menu-list-2{
-      text-indent: 24px;
-      background-color: #555;
-    }
-    &.menu-list-3{
-      text-indent: 32px;
-      background-color: #777;
-    }
-    &.menu-list-4{
-      text-indent: 40px;
-      background-color: #999;
-    }
-
-    .menu-item{
+  .folder-wrapper{
+    line-height: 20px;
+    font-size: 12px;
+    padding-left: 20px;
+    color:#ccc;
+    >.name{
+      height: 22px;
+      margin-left: -20px;
+      border:1px solid transparent;
       cursor: pointer;
-      & > .menu-list{
-        height: 0;
+      text-indent: 20px;
+      &.name-directory{
+        background: url(../img/arrow-right.png) no-repeat 3px center /14px;
+        &.open{
+          background-image: url(../img/arrow-down.png);
+        }
       }
+
+      &:hover{
+        background-color: #37373d;
+        border-color:#37373d;
+      }
+
       &.active{
-        .menu-item-txt{
-          color:#000;
-          background-color: #6ea1ff;
-        }
+        color:#e2c08d;
       }
-      &.open{
-        & > .menu-list{
-          height: auto;
-        }
-      }
-
-    }
-
-    .menu-item-txt{
-      height: 50px;
-      line-height: 50px;
-      color:#fff;
-
-      @media (any-hover: hover) {
-        &:hover{
-          color:#000;
-          background-color: #6ea1ff;
-        }
-      }
-      &.with-sub{
-        padding-left: 10px;
+      &.focus{
+        border-color:#007fd4;
       }
     }
   }

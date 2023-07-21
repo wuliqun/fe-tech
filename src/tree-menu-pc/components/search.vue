@@ -8,34 +8,66 @@
       @blur="isFocus = false"
     />
     <button class="icon-search"></button>
-    <div v-show="isFocus && result.length" class="search-result">
-      <div v-for="index in 10" :key="index" class="search-item">
+    <transition name="fade">
+      <div v-show="isFocus && searchResults.length" class="search-result">
         <div
-          class="icon"
-          :class="`${index % 2 === 0 ? 'icon-folder' : 'icon-file'}`"
-        ></div>
-        <div class="name">{{ ",khafsbnjshb," }}</div>
-        <div class="path f-thide">{{ "akh,ajkn/a,hfas/khkfsn/akha,bn" }}</div>
+          v-for="res in searchResults"
+          :key="res.fod.path"
+          class="search-item"
+          :title="res.fod.path"
+          @click="itemClick(res.fod)"
+        >
+          <div
+            class="icon"
+            :class="`${
+              res.fod.kind === 'directory' ? 'icon-folder' : 'icon-file'
+            }`"
+          ></div>
+          <div class="name f-thide" v-html="res.highlightName"></div>
+          <div class="path f-thide">{{ res.fod.path }}</div>
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch } from "vue";
-import { Directory } from "../type";
+import { Directory, FileOrDirectory } from "../type";
 
 const props = defineProps<{ root: Directory }>();
+const emit = defineEmits(["searched"]);
 
 const filename = ref("");
 const isFocus = ref(false);
 
-const result = computed(() => {
-  const res: {} = [];
+const searchResults = computed(() => {
+  const res: Array<{ fod: FileOrDirectory; highlightName: string }> = [];
   const name = filename.value;
   if (name) {
+    let stack = [...(props.root.children || [])];
+    while (stack.length) {
+      const fod = stack.shift()!;
+      // 排除node_modules dist
+      if (/\/(dist|node_modules)(\/|$)/.test(fod.path)) continue;
+      if (fod.name.indexOf(name) !== -1) {
+        res.push({
+          fod,
+          highlightName: fod.name.replace(name, `<em>${name}<em>`),
+        });
+      }
+      // 仅展示100条 防止渲染卡顿
+      if (res.length >= 100) break;
+      if (fod.kind === "directory" && fod.children?.length) {
+        stack = [...fod.children, ...stack];
+      }
+    }
   }
-  return [];
+  return res;
 });
+
+function itemClick(fod: FileOrDirectory) {
+  emit("searched", fod);
+}
 
 watch(filename, (val) => {
   if (/(^\s+|\s+$)/.test(val)) {
@@ -69,7 +101,7 @@ watch(filename, (val) => {
     top: 42px;
     left: 0;
     right: 0;
-    height: 300px;
+    max-height: 300px;
     padding: 9px 0;
     background-color: #252526;
   }
@@ -79,6 +111,7 @@ watch(filename, (val) => {
     height: 22px;
     margin: 2px;
     padding-left: 5px;
+    line-height: 22px;
     cursor: pointer;
     border-radius: 3px;
     &:hover {
@@ -91,6 +124,7 @@ watch(filename, (val) => {
       }
     }
     .icon {
+      flex-shrink: 0;
       width: 15px;
       height: 15px;
       margin-right: 5px;
@@ -104,16 +138,36 @@ watch(filename, (val) => {
       }
     }
     .name {
+      max-width: 130px;
       margin-right: 5px;
       font-size: 13px;
       color: #ccc;
+      :deep(em) {
+        color: #2aaaff;
+      }
     }
     .path {
       flex: 1;
-      margin-top: 3px;
+      margin-top: 1px;
       font-size: 12px;
       color: #999;
     }
   }
+}
+
+// fade transition
+.fade-enter-active {
+  opacity: 0;
+  transition: all 0.15s ease-out;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+.fade-leave-active {
+  opacity: 1;
+  transition: all 0.15s ease-out;
+}
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

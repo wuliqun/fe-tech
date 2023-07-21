@@ -1,60 +1,57 @@
-import { type PropType, defineComponent, h, reactive, ref } from "vue";
+import {
+  type PropType,
+  defineComponent,
+  h,
+  reactive,
+  ref,
+  onBeforeUnmount,
+  onMounted,
+  nextTick,
+} from "vue";
 
 import Search from "./search.vue";
-import { FileOrDirectory, Directory } from "../type";
+import { FileOrDirectory, Directory, File } from "../type";
 import "./menu.scss";
 
-// function renderFileOrDirectory(
-//   item: FileOrDirectory,
-//   path: number[],
-//   onClick: (item: FileOrDirectory, path: number[]) => void
-// ) {
-//   return h(
-//     "div",
-//     {
-//       class: `menu-item menu-item-${path.length - 1} ${
-//         item.active ? (item.children?.length ? "open" : "active") : ""
-//       }`,
-//     },
-//     [
-//       h(
-//         "div",
-//         {
-//           class: ["menu-item-txt"],
-//           onclick: () => {
-//             onClick(item, path);
-//           },
-//         },
-//         (item.children?.length ? (item.active ? "- " : "+ ") : "") + item.name
-//       ),
-//       item.children?.length
-//         ? renderDirectory(item.children, path, onClick, item.active)
-//         : undefined,
-//     ]
-//   );
-// }
-
-// function renderDirectory(
-//   root: Directory,
-//   path: number[],
-//   onClick: (item: FileOrDirectory, path: number[]) => void,
-//   active?: boolean
-// ) {
-//   return h(
-//     "div",
-//     {
-//       class: [
-//         `menu-list menu-list-${path.length}`,
-//         { open: path.length === 0 || active },
-//       ],
-//     },
-//     [
-//       menu.map((item, index) =>
-//         renderFileOrDirectory(item, [...path, index], onClick)
-//       ),
-//     ]
-//   );
-// }
+function renderFileOrDirectory(
+  folder: FileOrDirectory,
+  onClick: (item: FileOrDirectory) => void,
+  activeFile?: File,
+  isRoot = false
+) {
+  return h(
+    "div",
+    {
+      class: [`folder-wrapper`, { root: isRoot, open: folder.active }],
+    },
+    [
+      h(
+        "div",
+        {
+          class: [
+            "name",
+            `name-${folder.kind}`,
+            {
+              focus: folder.focus,
+              open: folder.active,
+              active:
+                folder.active || activeFile?.path.indexOf(folder.path) === 0,
+            },
+          ],
+          title: folder.path,
+          onClick: () => {
+            onClick(folder);
+          },
+        },
+        isRoot ? folder.name.toUpperCase() : folder.name
+      ),
+    ].concat(
+      folder.active && folder.kind === "directory" && folder.children?.length
+        ? folder.children.map((item) => renderFileOrDirectory(item, onClick))
+        : []
+    )
+  );
+}
 
 export default defineComponent({
   props: {
@@ -62,38 +59,41 @@ export default defineComponent({
       type: Object as PropType<Directory>,
     },
   },
-  emits: ["open", "fold", "active"],
+  emits: ["preview"],
   setup(props, { emit }) {
-    const active = ref<number[]>([]);
+    const lastFocus = ref<FileOrDirectory>();
+    const lastActiveFile = ref<File>();
 
-    // function onClick(item: FileOrDirectory, path: number[]) {
-    //   console.log(path);
-    //   if (item.children?.length) {
-    //     item.active = !item.active;
-    //     if (item.active) {
-    //       emit("open", item.name);
-    //     } else {
-    //       emit("fold", item.name);
-    //     }
-    //   } else {
-    //     if (!item.active) {
-    //       item.active = true;
-    //       emit("active", item.name);
-    //       if (active.value.length) {
-    //         try {
-    //           let m: FileOrDirectory = menus[active.value[0]];
-    //           for (let i = 1; i < active.value.length; i++) {
-    //             m = m.children![active.value[i]];
-    //           }
-    //           m.active = false;
-    //         } catch (err) {
-    //           console.error(err);
-    //         }
-    //       }
-    //       active.value = path;
-    //     }
-    //   }
-    // }
+    function onClick(item: FileOrDirectory) {
+      setTimeout(() => {
+        item.focus = true;
+        if (item.kind === "directory") {
+          item.active = !item.active;
+        } else {
+          item.active = true;
+          if (lastActiveFile.value && lastActiveFile.value !== item) {
+            lastActiveFile.value.active = false;
+          }
+          lastActiveFile.value = item;
+          emit("preview", item);
+        }
+        lastFocus.value = item;
+      }, 10);
+    }
+
+    function documentClick() {
+      if (lastFocus.value) {
+        lastFocus.value.focus = false;
+        lastFocus.value = void 0;
+      }
+    }
+    onMounted(() => {
+      document.addEventListener("click", documentClick);
+    });
+    onBeforeUnmount(() => {
+      document.removeEventListener("click", documentClick);
+    });
+
     return () =>
       props.root
         ? h(
@@ -102,8 +102,16 @@ export default defineComponent({
               class: "m-tree-menu",
             },
             [
-              h(Search, { root: props.root }),
-              // renderDirectory(props.root, [], onClick),
+              h(Search, {
+                root: props.root,
+                onSearched: onClick,
+              }),
+              renderFileOrDirectory(
+                props.root,
+                onClick,
+                lastActiveFile.value,
+                true
+              ),
             ]
           )
         : undefined;
