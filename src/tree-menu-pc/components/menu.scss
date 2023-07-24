@@ -1,10 +1,13 @@
 .m-tree-menu{
   user-select: none;
-  .folder-wrapper{
+  .folder-wrapper,.file-wrapper{
     line-height: 20px;
     font-size: 12px;
     padding-left: 20px;
     color:#ccc;
+    &.drag-over{
+      background-color: #37373d;
+    }
     >.name{
       height: 22px;
       margin-left: -20px;
