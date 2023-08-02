@@ -1,11 +1,13 @@
 <template>
-  <div class="app"></div>
+  <div class="app">
+    <painter />
+  </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Painter from "../components/painter.vue";
+</script>
 
 <style lang="scss" scoped>
 .app {
-  display: flex;
-  height: 100%;
 }
 </style>
