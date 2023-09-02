@@ -68,6 +68,7 @@
 	"dependencies": {
 		"element-plus": "^2.3.8",
 		"three": "^0.156.0",
-		"vue": "^3.3.4"
+		"vue": "^3.3.4",
+		"vue-router": "^4.2.4"
 	}
 }
