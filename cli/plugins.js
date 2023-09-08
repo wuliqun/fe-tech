@@ -31,11 +31,11 @@ const plugins = [
 ];
 
 if (IS_DEV) {
-  plugins.push(
-    new CopyWebpackPlugin({
-      patterns: [{ from: path.join(entryPath, "sw.js"), to: "sw.js" }],
-    })
-  );
+  // plugins.push(
+  //   new CopyWebpackPlugin({
+  //     patterns: [{ from: path.join(entryPath, "sw.js"), to: "sw.js" }],
+  //   })
+  // );
 } else {
   plugins.push(
     new MiniCssExtractPlugin({
