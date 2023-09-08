@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "importHelpers": true,
     "jsx": "preserve",
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost","webworker"],
     "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true, // 报告 switch 语句的 fallthrough 错误。（即，不允许 switch 的 case 语句贯穿）

@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const AutoImport = require("unplugin-auto-import/webpack");
 const Components = require("unplugin-vue-components/webpack");
 const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
@@ -12,6 +12,7 @@ const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
 const { entryPath, IS_DEV, env, project } = require("./commander");
 
 const plugins = [
+  new CleanWebpackPlugin(),
   new HtmlWebpackPlugin({ template: `${entryPath}/index.html` }),
   new VueLoaderPlugin(),
   new DefinePlugin({
@@ -30,6 +31,11 @@ const plugins = [
 ];
 
 if (IS_DEV) {
+  plugins.push(
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.join(entryPath, "sw.js"), to: "sw.js" }],
+    })
+  );
 } else {
   plugins.push(
     new MiniCssExtractPlugin({
@@ -39,7 +45,10 @@ if (IS_DEV) {
 
   plugins.push(
     new CopyWebpackPlugin({
-      patterns: [{ from: path.join(entryPath, "public"), to: "public" }],
+      patterns: [
+        { from: path.join(entryPath, "public"), to: "public" },
+        { from: path.join(entryPath, "sw.js"), to: "sw.js" },
+      ],
     })
   );
 }
